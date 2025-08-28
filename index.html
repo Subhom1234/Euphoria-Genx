@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Table of Content</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes fadeSlideIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-slide {
+      animation: fadeSlideIn 0.8s ease-out forwards;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-r from-green-100 via-blue-100 to-purple-100 min-h-screen flex items-center justify-center p-6">
+
+  <div class="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden animate-fade-slide">
+    <!-- Header -->
+    <h2 class="text-center text-2xl font-bold text-gray-700 py-5 bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+      Table of Content
+    </h2>
+
+    <!-- Controls -->
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4 px-6 py-4 bg-gray-50 border-b">
+      <input id="searchInput" type="text" placeholder="Search by date or description..."
+        class="w-full md:w-1/2 px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 outline-none">
+      
+      <select id="sortSelect"
+        class="w-full md:w-1/4 px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-purple-400 outline-none">
+        <option value="newest">Sort: Newest</option>
+        <option value="oldest">Sort: Oldest</option>
+      </select>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto">
+      <table id="recordsTable" class="min-w-full border border-gray-200">
+        <thead>
+          <tr class="bg-gradient-to-r from-blue-400 to-purple-400 text-white text-left">
+            <th class="px-6 py-3 text-sm font-semibold">Date</th>
+            <th class="px-6 py-3 text-sm font-semibold">Description</th>
+            <th class="px-6 py-3 text-sm font-semibold text-center">View</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody" class="divide-y divide-gray-200">
+          <tr class="hover:bg-blue-50 hover:shadow-md transition duration-300">
+            <td class="px-6 py-4 text-gray-700">2025-08-25</td>
+            <td class="px-6 py-4 text-gray-600">Project presentation file</td>
+            <td class="px-6 py-4 text-center">
+              <button onclick="openLink('https://example.com/project')" 
+                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow transform hover:scale-105 hover:animate-pulse transition">
+                👁 View
+              </button>
+            </td>
+          </tr>
+          <tr class="hover:bg-blue-50 hover:shadow-md transition duration-300">
+            <td class="px-6 py-4 text-gray-700">2025-08-26</td>
+            <td class="px-6 py-4 text-gray-600">Team meeting notes</td>
+            <td class="px-6 py-4 text-center">
+              <button onclick="openLink('https://example.com/notes')" 
+                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow transform hover:scale-105 hover:animate-pulse transition">
+                👁 View
+              </button>
+            </td>
+          </tr>
+          <tr class="hover:bg-blue-50 hover:shadow-md transition duration-300">
+            <td class="px-6 py-4 text-gray-700">2025-08-27</td>
+            <td class="px-6 py-4 text-gray-600">Final report document</td>
+            <td class="px-6 py-4 text-center">
+              <button onclick="openLink('https://example.com/report')" 
+                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow transform hover:scale-105 hover:animate-pulse transition">
+                👁 View
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    function openLink(url) {
+      window.open(url, '_blank');
+    }
+
+    const searchInput = document.getElementById("searchInput");
+    const sortSelect = document.getElementById("sortSelect");
+    const tableBody = document.getElementById("tableBody");
+
+    function filterTable() {
+      const searchValue = searchInput.value.toLowerCase();
+      const rows = tableBody.getElementsByTagName("tr");
+
+      for (let row of rows) {
+        const date = row.cells[0].textContent.toLowerCase();
+        const description = row.cells[1].textContent.toLowerCase();
+        row.style.display = (date.includes(searchValue) || description.includes(searchValue)) ? "" : "none";
+      }
+    }
+
+    function sortTable(order) {
+      let rows = Array.from(tableBody.querySelectorAll("tr"));
+      rows.sort((a, b) => {
+        let dateA = new Date(a.cells[0].textContent);
+        let dateB = new Date(b.cells[0].textContent);
+        return order === "newest" ? dateB - dateA : dateA - dateB;
+      });
+      rows.forEach(row => tableBody.appendChild(row));
+    }
+
+    searchInput.addEventListener("keyup", filterTable);
+    sortSelect.addEventListener("change", () => sortTable(sortSelect.value));
+
+    // Default sort newest
+    sortTable("newest");
+  </script>
+
+</body>
+</html>
